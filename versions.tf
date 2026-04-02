@@ -8,5 +8,4 @@ terraform {
 }
 
 provider "aws" {
-  profile = "learning2"
 }
