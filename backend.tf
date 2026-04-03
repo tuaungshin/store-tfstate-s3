@@ -5,6 +5,6 @@ terraform {
     region = "ap-southeast-1"
     encrypt = true
     use_lockfile = true
-    profile = "learning2"
+    #profile = "learning2"
   }
 }
