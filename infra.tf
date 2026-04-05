@@ -24,7 +24,7 @@ resource "aws_subnet" "my_subnetA" {
 resource "aws_subnet" "my_private_subnetB" {
   vpc_id = aws_vpc.my_vpc.id
 
-  cidr_block        = "10.0.0.1/24"
+  cidr_block        = "10.0.1.0/24"
   availability_zone = var.az_b
 
   tags = {
