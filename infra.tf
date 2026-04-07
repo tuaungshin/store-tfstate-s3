@@ -112,7 +112,7 @@ resource "local_file" "ssh_public_key_openssh" {
 
 resource "aws_key_pair" "quickstart_key_pair" {
   key_name= "${var.prefix}-keypair"
-  public_key      = tls_private_key.aws.public_key_openssh
+  public_key      = tls_private_key.aws_key.public_key_openssh
 }
 
 ###################
