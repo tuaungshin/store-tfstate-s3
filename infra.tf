@@ -89,30 +89,31 @@ resource "aws_security_group" "my_sg_allowall" {
 }
 
 ##### 
-####AWS key-pair Generate
-#####
-resource "tls_private_key" "aws_key" {
+# 🔑 Create Key Pair 
+resource "tls_private_key" "ssh_key" {
   algorithm = "RSA"
   rsa_bits  = 2048
 }
 
-##save private key##
-resource "local_sensitive_file" "ssh_private_key_pem" {
-  filename        = "${path.module}/id_rsa"
-  content         = tls_private_key.aws_key.private_key_pem
-  file_permission = "0600"
+resource "aws_key_pair" "key_pair" {
+  key_name = var.aws-keypair
+  public_key      = tls_private_key.ssh_key.public_key_openssh
 }
 
-## save public key
+resource "local_file" "private_key" {
+  filename = "${path.root}/generated-key.pem"
+  content  = tls_private_key.ssh_key.private_key_openssh
 
-resource "local_file" "ssh_public_key_openssh" {
-  filename = "${path.module}/id_rsa.pub"
-  content  = tls_private_key.aws_key.public_key_openssh
+  provisioner "local-exec" {
+    command = "chmod 400 ${path.root}/generated-key.pem"
+  }
 }
 
-resource "aws_key_pair" "quickstart_key_pair" {
-  key_name= "${var.prefix}-keypair"
-  public_key      = tls_private_key.aws_key.public_key_openssh
-}
+resource "aws_s3_bucket" "example" {
+  bucket = "my-dev-s3"
 
-###################
+  tags = {
+    Name        = "My bucket"
+    Environment = "Dev"
+  }
+}

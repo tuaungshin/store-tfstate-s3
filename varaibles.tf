@@ -17,3 +17,10 @@ variable "az_b" {
   description = "AWS zone used for all resources"
   default     = "ap-southeast-1b"
 }
+
+variable "aws-keypair" {
+  type = string
+  description = "aws ec2 key pair"
+  default = "myec2-keypair"
+  
+}
