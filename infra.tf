@@ -108,12 +108,3 @@ resource "local_file" "private_key" {
     command = "chmod 400 ${path.root}/generated-key.pem"
   }
 }
-
-resource "aws_s3_bucket" "example" {
-  bucket = "my-dev-s3"
-
-  tags = {
-    Name        = "My bucket"
-    Environment = "Dev"
-  }
-}
