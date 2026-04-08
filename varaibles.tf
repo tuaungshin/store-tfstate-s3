@@ -24,3 +24,9 @@ variable "aws-keypair" {
   default = "myec2-keypair"
   
 }
+
+variable "instance_type" {
+  type        = string
+  description = "Instance type used for all EC2 instances"
+  default     = "t3a.medium"
+}

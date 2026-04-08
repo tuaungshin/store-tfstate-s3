@@ -108,3 +108,17 @@ resource "local_file" "private_key" {
     command = "chmod 400 ${path.root}/generated-key.pem"
   }
 }
+
+##ec2 Create
+resource "aws_instance" "ec2_node" {
+  depends_on = [
+    aws_route_table_association.rancher_route_table_association
+  ]
+  ami           = data.aws_ami.sles.id
+  instance_type = var.instance_type
+
+  key_name                    = var.aws-keypair
+  vpc_security_group_ids      = [aws_security_group.my_sg_allowall.id]
+  subnet_id                   = aws_subnet.my_subnetA.id
+  associate_public_ip_address = true
+}
