@@ -7,7 +7,7 @@ variable "prefix" {
 }
 
 variable "region" {
-  type = "string"
+  type = string
   default = "ap-southeast-1"
 }
 variable "az_a" {
