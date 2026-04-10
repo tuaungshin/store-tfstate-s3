@@ -95,7 +95,7 @@ resource "aws_security_group" "my_sg_allowall" {
 # IAM Role for SSM
 # #################
 resource "aws_iam_role" "ec2_ssm_role" {
-  name = "ec2-ssm-role"
+  name = "ec2-ssm-role2"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -121,7 +121,7 @@ resource "aws_iam_role_policy_attachment" "ssm_core" {
 ## profile
 #################
 resource "aws_iam_instance_profile" "ec2_profile" {
-  name = "ec2-ssm-profile"
+  name = "ec2-ssm-profile2"
   role = aws_iam_role.ec2_ssm_role.name
 }
 
