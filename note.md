@@ -16,3 +16,11 @@ This is where the magic happens 🚀
 When you push code → GitHub runs Terraform automatically.
 
 .github/workflows/terraform.yml
+
+
+
+precreate s3 bucket.
+ssh key gen ..where is private key 
+
+how to destroy code .
+how to connect ec2

@@ -6,6 +6,10 @@ variable "prefix" {
   default     = "testing-vpc"
 }
 
+variable "region" {
+  type = "string"
+  default = "ap-southeast-1"
+}
 variable "az_a" {
   type        = string
   description = "AWS zone used for all resources"

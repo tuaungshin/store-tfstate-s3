@@ -15,9 +15,10 @@ resource "aws_subnet" "my_subnetA" {
 
   cidr_block        = "10.0.0.0/24"
   availability_zone = var.az_a
+  map_public_ip_on_launch = true
 
   tags = {
-    Name = "${var.prefix}-my-subnetA"
+    Name = "${var.prefix}-my-public-subnetA"
   }
 }
 # No IGW 
@@ -62,8 +63,10 @@ resource "aws_route_table_association" "rancher_route_table_association" {
   subnet_id      = aws_subnet.my_subnetA.id
   route_table_id = aws_route_table.rancher_route_table.id
 }
-
+#######################################
 # Security group to allow all traffic
+#######################################
+
 resource "aws_security_group" "my_sg_allowall" {
   name        = "${var.prefix}-allowall"
   description = "test- allow all traffic"
@@ -88,28 +91,43 @@ resource "aws_security_group" "my_sg_allowall" {
   }
 }
 
-##### 
-# 🔑 Create Key Pair 
-resource "tls_private_key" "ssh_key" {
-  algorithm = "RSA"
-  rsa_bits  = 2048
+##################
+# IAM Role for SSM
+# #################
+resource "aws_iam_role" "ec2_ssm_role" {
+  name = "ec2-ssm-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+###################
+## iam role attachment
+###################
+resource "aws_iam_role_policy_attachment" "ssm_core" {
+  role       = aws_iam_role.ec2_ssm_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+#################
+## profile
+#################
+resource "aws_iam_instance_profile" "ec2_profile" {
+  name = "ec2-ssm-profile"
+  role = aws_iam_role.ec2_ssm_role.name
 }
 
-resource "aws_key_pair" "key_pair" {
-  key_name = var.aws-keypair
-  public_key      = tls_private_key.ssh_key.public_key_openssh
-}
-
-resource "local_file" "private_key" {
-  filename = "${path.root}/generated-key.pem"
-  content  = tls_private_key.ssh_key.private_key_openssh
-
-  provisioner "local-exec" {
-    command = "chmod 400 ${path.root}/generated-key.pem"
-  }
-}
-
-##ec2 Create
+###############################
+##Create ec2 on public subnet
+###############################
 resource "aws_instance" "ec2_node" {
   depends_on = [
     aws_route_table_association.rancher_route_table_association
@@ -117,8 +135,8 @@ resource "aws_instance" "ec2_node" {
   ami           = data.aws_ami.sles.id
   instance_type = var.instance_type
 
-  key_name                    = var.aws-keypair
   vpc_security_group_ids      = [aws_security_group.my_sg_allowall.id]
   subnet_id                   = aws_subnet.my_subnetA.id
   associate_public_ip_address = true
+  iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
 }
