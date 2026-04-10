@@ -32,5 +32,5 @@ variable "aws-keypair" {
 variable "instance_type" {
   type        = string
   description = "Instance type used for all EC2 instances"
-  default     = "t3a.medium"
+  default     = "t2.nano"
 }

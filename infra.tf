@@ -132,7 +132,7 @@ resource "aws_instance" "ec2_node" {
   depends_on = [
     aws_route_table_association.rancher_route_table_association
   ]
-  ami           = data.aws_ami.sles.id
+  ami           = data.aws_ami.amazon_linux_2.id
   instance_type = var.instance_type
 
   vpc_security_group_ids      = [aws_security_group.my_sg_allowall.id]

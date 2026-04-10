@@ -1,12 +1,17 @@
- #Use latest SLES 15 SP3
-data "aws_ami" "sles" {
+data "aws_ami" "amazon_linux_2" {
   most_recent = true
-  owners      = ["013907871322"] # SUSE
+  owners      = ["amazon"]
 
   filter {
     name   = "name"
-    values = ["suse-sles-15-sp3*"]
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
   }
+
+  filter {
+    name   = "state"
+    values = ["available"]
+  }
+
 
   filter {
     name   = "virtualization-type"
