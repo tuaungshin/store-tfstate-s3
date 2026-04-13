@@ -129,14 +129,25 @@ resource "aws_iam_instance_profile" "ec2_profile" {
 ##Create ec2 on public subnet
 ###############################
 resource "aws_instance" "ec2_node" {
-  depends_on = [
-    aws_route_table_association.rancher_route_table_association
-  ]
+
   ami           = data.aws_ami.amazon_linux_2.id
   instance_type = var.instance_type
 
   vpc_security_group_ids      = [aws_security_group.my_sg_allowall.id]
   subnet_id                   = aws_subnet.my_subnetA.id
   associate_public_ip_address = true
+  iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
+}
+
+###############################
+##Create ec2 on private subnet
+###############################
+resource "aws_instance" "ec2_private" {
+ 
+  ami           = data.aws_ami.amazon_linux_2.id
+  instance_type = var.instance_type
+
+  vpc_security_group_ids      = [aws_security_group.my_sg_allowall.id]
+  subnet_id                   = aws_subnet.my_private_subnetB.id
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
 }
