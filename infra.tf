@@ -121,7 +121,7 @@ resource "aws_iam_role_policy_attachment" "ssm_core" {
 ## profile
 #################
 resource "aws_iam_instance_profile" "ec2_profile" {
-  name = "ec2-ssm-profile2"
+  name = "ec2-ssm-profile3"
   role = aws_iam_role.ec2_ssm_role.name
 }
 
